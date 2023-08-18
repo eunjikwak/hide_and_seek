@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+        }
+
+        .root {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 300px;
+            padding: 20px 32px;
+            background-color: #FFFFFF;
+            border: 1px solid #000000;
+            border-radius: 12px;
+            max-height: 400px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            padding-bottom: 4px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #DFDFDF;
+        }
+        .button_close{
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            cursor: pointer;
+        }
+        .container_lv3 {
+            overflow-y: auto;
+        }
+        .container_lv3::-webkit-scrollbar {
+            width: 0.5em;
+            height: 0.5em;
+        }
+
+        .container_lv3::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0);
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-around;
+            width: 302px;
+            color: #BCBCBC;
+            font-size: 14px;
+            margin-bottom: 16px;
+            margin-left: 32px;
+        }
+
+        .player-header-caller {
+            width: 100px;
+            text-align: center;
+        }
+
+        .player-header-go {
+            width: 100px;
+            text-align: center;
+        }
+
+        .player-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 24px;
+        }
+
+        .player-cnt {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+            background-color: #E6F4F8;
+            border-radius: 50%;
+        }
+
+        .player-wrapper:nth-of-type(1) .player-cnt {
+            background-color: #F9D84F;
+        }
+
+        .player-wrapper:nth-of-type(2) .player-cnt {
+            background-color: #E3E3E3;
+        }
+
+        .player-wrapper:nth-of-type(3) .player-cnt {
+            background-color: #DDC8A9;
+        }
+
+        .player-info {
+            display: flex;
+            justify-content: space-around;
+            width: 304px;
+            font-size: 14px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #DFDFDF;
+        }
+
+        .player-name {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+        }
+
+        .player-score {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="root">
+        <div class="wrapper">
+            <div class="button_close">
+                <div onclick="closeWidget()" class="fa-solid fa-xmark">X</div>
+            </div>
+            <div class="header-title">Ranking Board</div>
+            <div class="player-header">
+                <div class="player-header-caller">
+                    Name
+                </div>
+                <div class="player-header-go">
+                    Score
+                </div>
+            </div>
+            <div class="container_lv3" id="current">
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    // let appStorage = {
+    //     "currentRank": {
+    //         "1111": {
+    //             "name": "1111",
+    //             "score": 1,
+    //         },
+    //         "2222": {
+    //             "name": "2222",
+    //             "score": 5,
+    //         },
+    //         "3333": {
+    //             "name": "3333",
+    //             "score": 10,
+    //         },
+    //         "4444": {
+    //             "name": "4444",
+    //             "score": 6,
+    //         },
+    //         "5555": {
+    //             "name": "5555",
+    //             "score": 8,
+    //         },
+    //         "6666": {
+    //             "name": "6666",
+    //             "score": 2,
+    //         },
+    //         "7777": {
+    //             "name": "6666",
+    //             "score": 2,
+    //         },
+    //         "8888": {
+    //             "name": "6666",
+    //             "score": 2,
+    //         }
+    //     }
+    // }
+    function closeWidget() {
+				// App으로 메시지를 보냄.
+		window.parent.postMessage(
+			{
+				type: "close",
+			},
+			"*"
+		);
+	}
+    function make_rank(appStorage) {
+    let currentRank = appStorage["currentRank"];
+    let rank_arr = [];
+
+    for (let i in currentRank) {
+        rank_arr.push(currentRank[i]);
+    }
+
+    rank_arr.sort(function (a, b) {
+        return b.score - a.score;
+    });
+    console.log("ghkrdls");
+    console.log(rank_arr);
+    return rank_arr;
+}
+
+    function drawing_current_Rank(appStorage) {
+        let span = document.getElementById("current")
+        let rank_cnt = 1
+        let _html = ''
+        make_rank(appStorage).forEach(el => {
+            if (Number(el.score) == 0) {
+                _html += `
+                    <div class="player-wrapper">
+                        <div class="player-cnt">${rank_cnt}</div>
+                        <div class="player-info">
+                            <div class="player-name">${el.name}</div>
+                            <div class="player-score">-</div>
+                        </div>
+                    </div>
+                `
+            rank_cnt++
+            } else {
+                _html += `
+                    <div class="player-wrapper">
+                        <div class="player-cnt">${rank_cnt}</div>
+                        <div class="player-info">
+                            <div class="player-name">${el.name}</div>
+                            <div class="player-score">${el.score}</div>
+                        </div>
+                    </div>
+                `
+                rank_cnt++
+            }
+        })
+        span.innerHTML = _html
+    }
+
+    //서버에서 받은거
+    window.addEventListener('message', function (e) {
+        let appStorage = JSON.parse(e.data);
+        drawing_current_Rank(appStorage)
+    });
+
+</script>
+
+</html>
